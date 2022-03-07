@@ -1,0 +1,68 @@
+@page
+@model R10_web_EF.Pages_Blog.IndexModel
+
+@{
+    ViewData["Title"] = "Danh sách bài viết";
+    int i = 0;
+}
+
+<h1>Danh sách bài viết</h1>
+
+<form class="mb-2" method="get" asp-page="./Index">
+    <label>TÌm kiếm</label>
+    <input name="SearchString" >
+    <button type="submit">Tìm</button>
+</form>
+<p>
+    <a class="btn btn-primary" asp-page="Create">Create New</a>
+</p>
+
+@* phat sinh url @Url.Page("/Blog/Index", new {p =10}); *@
+@{
+    var pagingModel = new R10.Helper.PagingModel()
+    {
+        currentPage = Model.currentPage,
+        countPages = Model.countPages,
+        generateUrl = (int? p) => @Url.Page("/Blog/Index", new {p})
+    };
+}
+<partial name="_PagingTT" model="@pagingModel" ></partial>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Article[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Article[0].Created)
+            </th>
+            @* <th>
+                @Html.DisplayNameFor(model => model.Article[0].Content)
+            </th> *@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Article) {
+        <tr>
+            <td>@(++i)</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Created)
+            </td>
+            @* <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td> *@
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Sửa</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">ND</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Xóa</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
