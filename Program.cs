@@ -20,15 +20,25 @@ builder.Services.Configure<MailSettings>(
 
 builder.Services.AddSingleton<IEmailSender, SendMailService>();
 
-//trang login tùy biến
-// builder.Services.AddIdentity<AppUser, IdentityRole>()
-//                 .AddEntityFrameworkStores<MyBlogContext>()
-//                 .AddDefaultTokenProviders();
-//trang mặc dịnh trong code
-builder.Services.AddDefaultIdentity<AppUser>()
+// trang login tùy biến
+builder.Services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<MyBlogContext>()
                 .AddDefaultTokenProviders();
+//trang mặc dịnh trong code
+// builder.Services.AddDefaultIdentity<AppUser>()
+//                 .AddEntityFrameworkStores<MyBlogContext>()
+//                 .AddDefaultTokenProviders();
 
+
+//
+builder.Services.ConfigureApplicationCookie(option =>{
+    option.LoginPath = "/Login";
+    option.LogoutPath = "/Identity/Pages/Account/Logout";
+    option.AccessDeniedPath = "/Identity/Pages/Account/AccessDenied";
+    // option.LoginPath = "/Login/";
+    // option.LogoutPath = "/Logout/";
+    // option.AccessDeniedPath = "/kotruycap.html";
+});
 
 // Truy cập IdentityOptions
 builder.Services.Configure<IdentityOptions> (options => {
@@ -53,6 +63,7 @@ builder.Services.Configure<IdentityOptions> (options => {
     // Cấu hình đăng nhập.
     options.SignIn.RequireConfirmedEmail = true;            // Cấu hình xác thực địa chỉ email (email phải tồn tại)
     options.SignIn.RequireConfirmedPhoneNumber = false;     // Xác thực số điện thoại
+    options.SignIn.RequireConfirmedAccount = true;          // Cần xác để đăng nhập
 
 });
 
