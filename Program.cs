@@ -33,7 +33,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
 //
 builder.Services.ConfigureApplicationCookie(option =>{
     option.LoginPath = "/Login";
-    option.LogoutPath = "/Identity/Pages/Account/Logout";
+    option.LogoutPath = "/Logout";
     option.AccessDeniedPath = "/Identity/Pages/Account/AccessDenied";
     // option.LoginPath = "/Login/";
     // option.LogoutPath = "/Logout/";
@@ -51,8 +51,8 @@ builder.Services.Configure<IdentityOptions> (options => {
     options.Password.RequiredUniqueChars = 1; // Số ký tự riêng biệt
 
     // Cấu hình Lockout - khóa user
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes (5); // Khóa 5 phút
-    options.Lockout.MaxFailedAccessAttempts = 5; // Thất bại 5 lầ thì khóa
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds (10); // Khóa ...
+    options.Lockout.MaxFailedAccessAttempts = 3; // Thất bại 5 lầ thì khóa
     options.Lockout.AllowedForNewUsers = true;
 
     // Cấu hình về User.
