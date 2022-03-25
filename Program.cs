@@ -67,6 +67,24 @@ builder.Services.Configure<IdentityOptions> (options => {
 
 });
 
+builder.Services.AddAuthentication()
+                    .AddGoogle(option =>{
+                        var gconfic = builder.Configuration.GetSection("Authentication:Google");
+                        option.ClientId = gconfic["ClientId"];
+                        option.ClientSecret =gconfic["ClientSecret"];
+                        //mặc định callback là: /sigin-google 
+                        option.CallbackPath = "/LoginByGoogle";
+                    })
+                    .AddFacebook(option =>{
+                        var fconfic = builder.Configuration.GetSection("Authentication:FaceBook");
+                        option.AppId = fconfic["AppId"];
+                        option.AppSecret =fconfic["AppSecret"];
+                        
+                        option.CallbackPath = "/LoginByFaceBook";
+                    });
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
