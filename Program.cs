@@ -34,7 +34,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
 builder.Services.ConfigureApplicationCookie(option =>{
     option.LoginPath = "/Login";
     option.LogoutPath = "/Logout";
-    option.AccessDeniedPath = "/Identity/Pages/Account/AccessDenied";
+    option.AccessDeniedPath = "/AccessDenied";
     // option.LoginPath = "/Login/";
     // option.LogoutPath = "/Logout/";
     // option.AccessDeniedPath = "/kotruycap.html";
@@ -83,6 +83,10 @@ builder.Services.AddAuthentication()
                         option.CallbackPath = "/LoginByFaceBook";
                     });
 
+
+// Role service
+
+builder.Services.AddSingleton<IdentityErrorDescriber, AppIdentityErrorDescriber>();
 
 
 var app = builder.Build();

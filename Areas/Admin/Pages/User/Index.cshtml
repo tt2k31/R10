@@ -1,0 +1,55 @@
+﻿@page "/admin/member"
+@model R10.Admin.user.IndexModel
+@{
+    ViewData["Title"] = "Danh sách Thành viên";
+}
+
+@{
+    var pagingModel = new R10.Helper.PagingModel()
+    {
+        currentPage = Model.currentPage,
+        countPages = Model.countPages,
+        generateUrl = (int? p) => @Url.Page("/User/Index", new { p })
+    };
+}
+
+
+<h2>@ViewData["Title"]</h2>
+<p>Tổng số thành viên: @Model.totalUser</p>
+
+<partial name="_StatusMessage" model="@Model.StatusMessage"></partial>
+
+
+<div class="mb-2">
+    <a class="btn btn-secondary" asp-page="./Create">Thêm</a>
+</div>
+
+<partial name="_PagingTT" model="@pagingModel"></partial>
+
+<table class="table">
+    <tr>
+        <th>Tên User</th>
+        <th>Vai trò</th>
+        <th>Tác vụ</th>
+    </tr>
+
+    @foreach (var item in Model.users)
+    {
+        <tr>
+            <td>@item.UserName</td>
+            <td>
+                @if (string.IsNullOrEmpty(@item.RoleNames))
+                {
+                    <a class="text-dark text-decoration-none" asp-page="./AddRole" asp-route-id = "@item.Id" >+ Role</a>
+                } else 
+                {
+                    <a class="text-decoration-none" asp-page="./AddRole" asp-route-id = "@item.Id" >@item.RoleNames</a>
+                }
+            </td>
+            <td>
+
+                <a class="btn btn-success btn-sm" asp-page="./SetPassword" asp-route-id="@item.Id">Đặt mật khẩu</a>
+            </td>
+        </tr>
+    }
+</table>
