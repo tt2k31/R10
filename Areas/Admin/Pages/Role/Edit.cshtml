@@ -22,6 +22,22 @@
                 <a class="btn btn-success" asp-page="./Index" > Danh sách role</a>
             </div>
         </form>
+        <hr>
+
+        <p>Các đặc tính của role: 
+            <a class="text-decoration-none " asp-page= "./AddRoleClaim" asp-route-roleid ="@Model.role.Id" >+ Thêm RoleClaim</a>
+        </p>
+        @if (Model.Claims.Count > 0)
+        {
+            <ul>
+                @foreach (var claim in Model.Claims)
+                {
+                    <a asp-page="./EditRoleClaim" asp-route-claimid ="@claim.Id">
+                        <li>@claim.ClaimType : @claim.ClaimValue</li>
+                    </a>
+                }
+            </ul>
+        }
     </div>
 </div>
 

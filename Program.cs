@@ -88,6 +88,32 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddSingleton<IdentityErrorDescriber, AppIdentityErrorDescriber>();
 
+// Policy authorization
+builder.Services.AddAuthorization(option =>{
+    // option.AddPolicy("P1", policyBuilder =>{
+    //     //Đk policy
+    // });
+    option.AddPolicy("AllowEditRole", policyBuilder =>{
+        //Đk policy
+        policyBuilder.RequireAuthenticatedUser();
+        
+        // policyBuilder.RequireRole("Admin");
+
+        // policyBuilder.RequireClaim("tenclaim", "c1","c2");
+        // policyBuilder.RequireClaim("tenclaim", new string[] {
+        //     "c1",
+        //     "c2"
+        // });
+
+        // policyBuilder.RequireClaim("managa.role", "add", "update");
+        // policyBuilder.RequireClaim("canedit", "post", "update");
+        // policyBuilder.RequireClaim("canedit", new string[] {
+        //     "post",
+        //     "update"
+        // });
+    });
+});
+
 
 var app = builder.Build();
 

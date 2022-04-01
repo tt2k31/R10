@@ -1,10 +1,8 @@
-﻿@page "admin/add-role/{id}"
+﻿@page "/admin/add-role/{id}"
 @model AddRoleModel
 @{
     ViewData["Title"] = "Thêm vai trò";
 }
-
-
 
 <h2>@ViewData["Title"]: @Model.user.UserName</h2>
 <partial name="_StatusMessage" for="StatusMessage" />
@@ -25,6 +23,34 @@
             <button type="submit" class="w-100 btn btn-lg btn-primary mt-2">Cập nhật</button>
             <a asp-page="./Index" class="btn btn-primary mt-2" >Danh sách user</a>
         </form>
+        <hr>
+        <p> Các Claim của user có từ role</p>
+        @if (Model.claimInRole.Count > 0)
+        {
+            <ul>
+                @foreach (var claim in Model.claimInRole)
+                {
+                    <li>@claim.ClaimType: @claim.ClaimValue</li>
+                }
+            </ul>
+        }
+        <hr>
+        <p> Các Claim của riêng user:
+            <a asp-page="./EditUserRoleClaim" asp-page-handler="AddClaim" asp-route-userid="@Model.user.Id" >+ Thêm Claim riêng của user </a>    
+        </p>
+        @if (Model.claimInUserRole.Count > 0)
+        {
+            <ul>
+                @foreach (var claim in Model.claimInUserRole)
+                {                    
+                    <li>
+                        <a asp-page="./EditUserRoleClaim" asp-page-handler="EditClaim" asp-route-claimid="@claim.Id" >       
+                            @claim.ClaimType: @claim.ClaimValue
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
     </div>
 </div>
 

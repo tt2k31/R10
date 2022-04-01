@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using R10.models;
 
 namespace R10.Admin.role
 {
-    [Authorize(Roles = "Admin")]
+    //tạo 1 policy AllowEditRole để xác thực
+    // [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AllowEditRole")]
     public class EditModel : RolePageModel
     {
         public EditModel(RoleManager<IdentityRole> RoleManager, MyBlogContext context) : base(RoleManager, context)
@@ -25,6 +28,8 @@ namespace R10.Admin.role
         [BindProperty]
         public InputModel Input { set; get; }
         public IdentityRole role {set; get;}
+
+        public List<IdentityRoleClaim<string>> Claims {set; get;}
         public async Task<IActionResult> OnGet(string roleid)
         {
             if (roleid == null)
@@ -39,6 +44,8 @@ namespace R10.Admin.role
                 {
                     Name = role.Name
                 };
+                Claims = await _context.RoleClaims.Where(rc => rc.RoleId == role.Id).ToListAsync();
+
                 return Page();
             }
              return NotFound("ko tim thay");
@@ -55,6 +62,9 @@ namespace R10.Admin.role
             role = await _RoleManager.FindByIdAsync(roleid);
 
             if (role == null) return NotFound("ko tim thay");
+
+            //lấy cấc roleClaim
+            Claims = await _context.RoleClaims.Where(rc => rc.RoleId == role.Id).ToListAsync();
 
             if (!ModelState.IsValid)
             {

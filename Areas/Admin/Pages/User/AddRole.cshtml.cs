@@ -19,15 +19,18 @@ namespace R10.Admin.user
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly MyBlogContext _context;
 
         public AddRoleModel(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            MyBlogContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _context = context;
         }
 
         /// <summary>
@@ -35,6 +38,7 @@ namespace R10.Admin.user
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         /// 
+   
         // [BindProperty]
         // public InputModel Input { get; set; }
 
@@ -59,6 +63,9 @@ namespace R10.Admin.user
 
         public SelectList allRoles { set; get; }
 
+        public List<IdentityRoleClaim<string>> claimInRole {set; get;}
+        public List<IdentityUserClaim<string>> claimInUserRole {set; get;}
+
         public async Task<IActionResult> OnGetAsync(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -73,10 +80,11 @@ namespace R10.Admin.user
 
             RoleNames = (await _userManager.GetRolesAsync(user)).ToArray<string>();
 
-
             List<string> roleNames = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
             allRoles = new SelectList(roleNames);
 
+            await GetClaim(id);
+            
             return Page();
         }
 
@@ -92,6 +100,8 @@ namespace R10.Admin.user
             {
                 return NotFound($"KO co Tai khoan");
             }
+
+            await GetClaim(id);
 
             //Rolesname
             var OldRoleNames = (await _userManager.GetRolesAsync(user)).ToArray();
@@ -126,6 +136,25 @@ namespace R10.Admin.user
             StatusMessage = $"Vừa cập nhật thành công {user.UserName}.";
 
             return RedirectToPage("./Index");
+        }
+
+
+        async Task GetClaim(string id)
+        {
+            var listRole = from r in _context.Roles
+                            join ur in _context.UserRoles on r.Id equals ur.RoleId
+                            where ur.UserId == id
+                            select r;
+
+            var _claimInrole = from c in _context.RoleClaims
+                                join r in _context.Roles on c.RoleId equals r.Id
+                                select c;
+
+            claimInRole = await _claimInrole.ToListAsync();
+
+            claimInUserRole = await (from u in _context.UserClaims
+                                        where u.UserId == id select u).ToListAsync();
+
         }
     }
 }
