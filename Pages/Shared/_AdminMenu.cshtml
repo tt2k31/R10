@@ -1,0 +1,38 @@
+@using Microsoft.AspNetCore.Authorization
+
+@inject IAuthorizationService authorization
+
+@{
+
+}
+
+@if ((await authorization.AuthorizeAsync(this.User, "ShowAdminMenu")).Succeeded)
+{
+    @* <li class="nav-item dropdown">
+        <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" data-toggle="dropdown">
+        Manager
+        </a>
+
+        <div class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item" asp-area="Admin" asp-page="/Role/Index">Quan ly role</a>
+
+        <div class=" dropdown-divider"> </div>
+
+        <a class="dropdown-item" asp-area="Admin" asp-page="/User/Index">Quan ly user</a>
+        </div>
+        </li> *@
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown"
+        aria-expanded="false">Manager</a>
+        <ul class="dropdown-menu" aria-labelledby="dropdown03">
+            <a class="dropdown-item" asp-area="Admin" asp-page="/Role/Index">Quan ly role</a>
+
+            <div class=" dropdown-divider"> </div>
+
+            <a class="dropdown-item" asp-area="Admin" asp-page="/User/Index">Quan ly user</a>
+        </ul>
+    </li>
+
+
+}

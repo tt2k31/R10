@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using R10.models;
+using R10.Security.Requirements;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 // var connectionString = builder.Configuration.GetConnectionString("MyBlogContextConnection");
@@ -111,9 +113,27 @@ builder.Services.AddAuthorization(option =>{
         //     "post",
         //     "update"
         // });
+        
+    });
+
+    option.AddPolicy("InGenZ", policyBuilder =>{
+        policyBuilder.RequireAuthenticatedUser();
+        policyBuilder.Requirements.Add(new GenZRequirement()); // tạo Requirement ở Security
+
+        //tạo dịch vụ để xét requirement là authorization handler
+    });
+    option.AddPolicy("ShowAdminMenu", policyBuilder =>{
+        policyBuilder.RequireAuthenticatedUser();
+        policyBuilder.RequireRole("Admin");
+    });
+    option.AddPolicy("CanUpdateArticle", policyBuilder =>{
+        policyBuilder.RequireAuthenticatedUser();
+        policyBuilder.Requirements.Add(new ArticleUpdateRequirement());
     });
 });
 
+//Đăng kí dịch vụ authorization handler
+builder.Services.AddTransient<IAuthorizationHandler, AppAuthorizationHandler>();
 
 var app = builder.Build();
 

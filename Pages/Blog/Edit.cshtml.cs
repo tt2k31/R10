@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,9 +15,11 @@ namespace R10_web_EF.Pages_Blog
     {
         private readonly R10.models.MyBlogContext _context;
 
-        public EditModel(R10.models.MyBlogContext context)
+        private readonly IAuthorizationService _authorizationService;
+        public EditModel(R10.models.MyBlogContext context, IAuthorizationService authorizationService)
         {
             _context = context;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
@@ -51,7 +54,16 @@ namespace R10_web_EF.Pages_Blog
 
             try
             {
-                await _context.SaveChangesAsync();
+                //Kiem tra quyen cap nhat
+                var result = await _authorizationService.AuthorizeAsync(this.User, Article, "CanUpdateArticle");
+                if (result.Succeeded)
+                {
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return Content("ko co quyen"); 
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
